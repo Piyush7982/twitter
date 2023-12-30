@@ -11,7 +11,7 @@ class crudRepository {
       const entity = await this.model.create(data);
       return entity;
     } catch (error) {
-      console.error("in crud repository");
+      console.error("in crud repository:create");
       throw new customError(error.message, StatusCodes.BAD_REQUEST, error.name);
     }
   }

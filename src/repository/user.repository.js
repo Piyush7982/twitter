@@ -21,7 +21,7 @@ class userRepository extends crud {
   }
   async deleteByUsername(userName) {
     try {
-      const result = await this.model.deleteOne({ userName });
+      const result = await this.model.findOneAndDelete({ userName });
       return result;
     } catch (error) {
       throw new customError(

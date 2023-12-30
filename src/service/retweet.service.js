@@ -1,9 +1,11 @@
 const hashtagService = require("./hashtag.service");
 const mongoose = require("mongoose");
 const likeService = require("./like.service");
-const { retweetRepository } = require("../repository");
+const { retweetRepository, tweetRepository } = require("../repository");
 const { generateHashtag } = require("../util/Miscellaneous");
 const retweetRepo = new retweetRepository();
+const tweetRepo = new tweetRepository();
+
 async function createRetweet(Retweet) {
   const session = await mongoose.startSession();
 
@@ -32,7 +34,7 @@ async function createRetweet(Retweet) {
     const hashtagIds = await hashtagService.getHashtagByRetweet(RetweetId);
 
     const final = await retweetRepo.update(RetweetId, { hashtags: hashtagIds });
-
+    await tweetRepo.update(tweetId, { $push: { retweets: RetweetId } });
     //gethashtagfromtweet and update in tweet
     session.commitTransaction();
     return final;

@@ -12,8 +12,8 @@ async function signUp(req, res) {
       email: req.body.email,
       password: req.body.password,
     });
-    successResponse.Data = user;
-    successResponse.Message = "User created successfully";
+    successResponse.Data = user.userName;
+    successResponse.Message = `User created successfully with email ${user.email}`;
     return res.status(successResponse.StatusCode).json(successResponse);
   } catch (error) {
     errorResponse.Message = "failed to create user";
@@ -27,7 +27,7 @@ async function login(req, res) {
       userName: req.body.userName,
       password: req.body.password,
     });
-    successResponse.Data = user.user;
+    successResponse.Data = user.user.email;
     successResponse.Message = "User logged in successfully";
     res.cookie("access_token", user.token);
     return res.status(successResponse.StatusCode).json(successResponse);
@@ -87,20 +87,20 @@ async function deleteUser(req, res) {
     res.status(errorResponse.StatusCode).json(errorResponse);
   }
 }
-async function userTweets(req, res) {
-  try {
-    const user = await userService.getTweetsByUser({
-      userName: req.params.userName,
-    });
-    successResponse.Data = user;
-    successResponse.Message = "succesfully found";
-    return res.status(successResponse.StatusCode).json(successResponse);
-  } catch (error) {
-    errorResponse.Message = "failed to get user tweets";
-    errorResponse.Error = { error: error.message, name: error.name };
-    res.json(errorResponse).status(errorResponse.StatusCode);
-  }
-}
+// async function userTweets(req, res) {
+//   try {
+//     const user = await userService.getTweetsByUser({
+//       userName: req.params.userName,
+//     });
+//     successResponse.Data = user;
+//     successResponse.Message = "succesfully found";
+//     return res.status(successResponse.StatusCode).json(successResponse);
+//   } catch (error) {
+//     errorResponse.Message = "failed to get user tweets";
+//     errorResponse.Error = { error: error.message, name: error.name };
+//     res.json(errorResponse).status(errorResponse.StatusCode);
+//   }
+// }
 async function userReach(req, res) {
   try {
     const user = await userService.getUsersReach({
@@ -176,7 +176,6 @@ module.exports = {
   logout,
   getUser,
   deleteUser,
-  userTweets,
   userReach,
   userFollow,
   updateUsername,

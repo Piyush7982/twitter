@@ -8,18 +8,18 @@ class retweetRepository extends crud {
   }
   async getRetweet(data) {
     try {
-      const tweet = await Retweet.find(data);
-      return tweet;
+      const retweet = await Retweet.find(data);
+      return retweet;
     } catch (error) {
       throw new customError(error.message, StatusCodes.BAD_REQUEST, error.name);
     }
   }
   async updateUserReweet(filter, updateData) {
     try {
-      const tweet = await Retweet.findOneAndUpdate(filter, updateData, {
+      const retweet = await Retweet.findOneAndUpdate(filter, updateData, {
         new: true,
       });
-      return tweet;
+      return retweet;
     } catch (error) {
       throw new customError(
         "Not authorised",
@@ -31,7 +31,7 @@ class retweetRepository extends crud {
   async deleteUserRetweet(data) {
     try {
       const retweet = await Retweet.findOneAndDelete(data);
-      return tweet;
+      return retweet;
     } catch (error) {
       throw error;
     }

@@ -13,7 +13,7 @@ router.delete(
   userController.deleteUser
 );
 router.get("/:userName/reach", userController.userReach);
-router.get("/:userName/tweets", userController.userTweets);
+// router.get("/:userName/tweets", userController.userTweets);
 router.post(
   "/follow",
   userMiddleware.authenticationMiddleware,

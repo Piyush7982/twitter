@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const { bcrypt } = require("../util/authorisation");
+const Tweet = require("./tweet.schema");
 const userSchema = new Schema(
   {
     userName: {
@@ -43,7 +43,19 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 );
+userSchema.post("findOneAndDelete", async (doc, next) => {
+  const tweets = doc.tweets;
 
+  if (Boolean(tweets)) {
+    const final = await Promise.all(
+      tweets.map(async (id) => {
+        await Tweet.findOneAndDelete({ _id: id });
+      })
+    );
+  }
+  // const tweets = await Tweet.deleteMany({ user: doc._id });
+  next();
+});
 userSchema.methods.isFollowed = async function (id) {
   return await this.followers.includes(id);
 };

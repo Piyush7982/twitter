@@ -1,9 +1,12 @@
 const hashtagService = require("./hashtag.service");
 const mongoose = require("mongoose");
 const likeService = require("./like.service");
-const { tweetRepository } = require("../repository");
+
+const { tweetRepository, userRepository } = require("../repository");
 const { generateHashtag } = require("../util/Miscellaneous");
 const tweetRepo = new tweetRepository();
+const userRepo = new userRepository();
+
 async function createTweet(tweet) {
   const session = await mongoose.startSession();
 
@@ -31,6 +34,7 @@ async function createTweet(tweet) {
     const hashtagIds = await hashtagService.getHashtagByTweet(tweetId);
 
     const final = await tweetRepo.update(tweetId, { hashtags: hashtagIds });
+    await userRepo.update(users, { $push: { tweets: tweetId } });
 
     //gethashtagfromtweet and update in tweet
     session.commitTransaction();
