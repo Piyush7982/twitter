@@ -26,8 +26,8 @@ router.put(
   tweetController.likeTweet
 );
 router.get(
-  "/user",
-  userMiddleware.authenticationMiddleware,
+  "/user/:id",
+
   tweetController.findUserTweet
 );
 router.get("/:id", tweetController.getTweet);

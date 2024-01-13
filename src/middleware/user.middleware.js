@@ -5,6 +5,7 @@ const { jwt } = require("../util/authorisation");
 async function authenticationMiddleware(req, res, next) {
   try {
     const token = req.cookies.access_token;
+
     if (!token) {
       errorResponse.Message = "Token not found";
       errorResponse.Error = "Authentication Error";
@@ -37,7 +38,7 @@ async function authenticationMiddleware(req, res, next) {
   } catch (error) {
     errorResponse.Message = error.Message;
     errorResponse.Error = error.name;
-    errorResponse.StatusCode = StatusCodes.UNAUTHORIZED;
+    errorResponse.StatusCode = StatusCodes.REQUEST_TIMEOUT;
     res.status(errorResponse.StatusCode).json(errorResponse);
     return;
   }

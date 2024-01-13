@@ -88,5 +88,22 @@ class userRepository extends crud {
       throw error;
     }
   }
+  async findUserBySearch(userName, limit, page = 1) {
+    try {
+      const user = await User.find({
+        userName: { $regex: userName, $options: "i" },
+      })
+        .select("userName")
+        .limit(limit * 1)
+        .skip((page - 1) * limit * 1);
+      return user;
+    } catch (error) {
+      throw new customError(
+        error.message,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+        error.name
+      );
+    }
+  }
 }
 module.exports = userRepository;

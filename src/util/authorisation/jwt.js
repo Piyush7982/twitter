@@ -6,10 +6,11 @@ require("dotenv").config();
 
 async function tokenGenerate(data) {
   try {
-    const { id, userName } = data; //add suitable
+    const { id, userName, expiryInSec } = data; //add suitable
     const token = await jwt.sign(
       { id: id, userName: userName },
-      `${process.env.TOKEN_GENERATE_KEY}`
+      `${process.env.TOKEN_GENERATE_KEY}`,
+      { expiresIn: `${expiryInSec}s` }
     );
     return token;
   } catch (error) {

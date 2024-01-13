@@ -16,6 +16,22 @@ class tweetRepository extends crud {
       throw error;
     }
   }
+  async getUserTweet(limit, page, id) {
+    try {
+      // console.log(userName, limit, page);
+      const tweet = await pagination(
+        Tweet,
+        limit,
+        page,
+        { user: id },
+        { createdAt: -1 }
+      );
+
+      return tweet;
+    } catch (error) {
+      throw error;
+    }
+  }
   async getGlobalTweets(limit, page) {
     try {
       const tweet = await pagination(Tweet, limit, page, {}, { createdAt: -1 });

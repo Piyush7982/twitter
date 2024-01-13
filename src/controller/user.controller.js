@@ -27,9 +27,14 @@ async function login(req, res) {
       userName: req.body.userName,
       password: req.body.password,
     });
-    successResponse.Data = user.user.email;
+    successResponse.Data = user;
     successResponse.Message = "User logged in successfully";
-    res.cookie("access_token", user.token);
+    res.cookie("access_token", user.token, {
+      // httpOnly: true,
+      // sameSite: "strict",
+      secure: true,
+    });
+
     return res.status(successResponse.StatusCode).json(successResponse);
   } catch (error) {
     errorResponse.Message = "failed to login user";
@@ -170,6 +175,22 @@ async function updatePassword(req, res) {
     res.json(errorResponse).status(errorResponse.StatusCode);
   }
 }
+async function findUserBySearch(req, res) {
+  try {
+    const result = await userService.searchUser({
+      userName: req.params.userName,
+      limit: req.query.limit,
+      page: req.query.page,
+    });
+    successResponse.Data = result;
+    successResponse.Message = "succesfully found";
+    return res.status(successResponse.StatusCode).json(successResponse);
+  } catch (error) {
+    errorResponse.Message = "failed to find user";
+    errorResponse.Error = { error: error.message, name: error.name };
+    res.json(errorResponse).status(errorResponse.StatusCode);
+  }
+}
 module.exports = {
   signUp,
   login,
@@ -180,4 +201,5 @@ module.exports = {
   userFollow,
   updateUsername,
   updatePassword,
+  findUserBySearch,
 };

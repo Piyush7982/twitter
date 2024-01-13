@@ -96,11 +96,13 @@ async function likeTweet(req, res) {
 async function findUserTweet(req, res) {
   try {
     const tweet = await tweetService.FindTweetByUser({
-      userId: req.user.id,
+      id: req.params.id,
+      limit: req.query.limit,
+      page: req.query.page,
     });
 
     successResponse.Data = tweet;
-    successResponse.Message = "Tweet liked successfully";
+    successResponse.Message = "Tweet found   successfully";
     return res.status(successResponse.StatusCode).json(successResponse);
   } catch (error) {
     errorResponse.Message = "failed to like tweet";

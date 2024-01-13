@@ -13,6 +13,7 @@ async function createTweet(tweet) {
   session.startTransaction();
   try {
     const { content, users } = tweet;
+
     const hashtag = await generateHashtag(content);
 
     const result = await tweetRepo.create({
@@ -130,7 +131,8 @@ async function updateTweet(tweet) {
 }
 async function FindTweetByUser(data) {
   try {
-    const result = await tweetRepo.getTweet({ user: data.userId });
+    const { limit, page, id } = data;
+    const result = await tweetRepo.getUserTweet(limit, page, id);
     return result;
   } catch (error) {
     throw error;

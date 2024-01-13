@@ -29,5 +29,6 @@ router.patch(
   userMiddleware.authenticationMiddleware,
   userController.updateUsername
 );
+router.get("/search/:userName", userController.findUserBySearch);
 
 module.exports = { userRouter: router };

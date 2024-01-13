@@ -7,7 +7,9 @@ async function paginate(model, limit, page = 1, filter, sort) {
       .find(filter)
       .sort(sort)
       .limit(limit * 1)
-      .skip((page - 1) * limit * 1);
+      .skip((page - 1) * limit * 1)
+      .populate("user", "userName coverPhoto")
+      .populate("likes", "users");
     return results;
   } catch (err) {
     console.error(err.message);

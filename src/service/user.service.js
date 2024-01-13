@@ -80,9 +80,10 @@ async function login(userData) {
   try {
     const { userName, password } = userData;
     const user = await userRepo.getUserByCredential({ userName });
+
     if (!Boolean(user)) {
       throw new customError(
-        "User with this userNAme doesnot exists",
+        "User with this username doesnot exists",
         StatusCodes.BAD_REQUEST,
         "Validation Error"
       );
@@ -95,8 +96,14 @@ async function login(userData) {
         "Validation Error"
       );
     }
-    const token = await jwt.tokenGenerate({ id: user._id, userName: userName });
-    return { token, user };
+    const username = user.userName;
+    const id = user._id;
+    const token = await jwt.tokenGenerate({
+      id: user._id,
+      userName: userName,
+      expiryInSec: 60 * 60,
+    });
+    return { token, username, id };
   } catch (error) {
     throw error;
   }
@@ -191,6 +198,15 @@ async function updateUsername(data) {
     throw error;
   }
 }
+async function searchUser(data) {
+  try {
+    const { userName, limit, page } = data;
+    const result = await userRepo.findUserBySearch(userName, limit, page);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = {
   createUser,
@@ -202,4 +218,5 @@ module.exports = {
   getUserDetails,
   followUser,
   updateUsername,
+  searchUser,
 };
