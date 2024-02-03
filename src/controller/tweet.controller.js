@@ -10,6 +10,7 @@ async function createTweet(req, res) {
     const tweet = await tweetService.createTweet({
       content: req.body.content,
       users: req.user.id,
+      image: req?.file?.url,
     });
     successResponse.Data = tweet;
     successResponse.Message = "Tweet created successfully";
@@ -53,7 +54,11 @@ async function updateTweet(req, res) {
 }
 async function getTweet(req, res) {
   try {
-    const tweet = await tweetService.findTweetByTweetId((id = req.params.id));
+    const tweet = await tweetService.findTweetByTweetId(
+      (id = req.params.id),
+      (limit = req.query.limit),
+      (page = req.query.page)
+    );
     successResponse.Data = tweet;
     successResponse.Message = "Tweet found successfully";
     return res.status(successResponse.StatusCode).json(successResponse);

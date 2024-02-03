@@ -1,9 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { userController } = require("../../controller");
-const { userMiddleware } = require("../../middleware");
+const { userMiddleware, multerMiddlware } = require("../../middleware");
 
-router.post("/signup", userController.signUp);
+router.post(
+  "/signup",
+  multerMiddlware.imageUploadMiddleware,
+  userController.signUp
+);
 router.post("/login", userController.login);
 router.post("/logout", userController.logout);
 router.get("/:userName", userController.getUser);
@@ -30,5 +34,11 @@ router.patch(
   userController.updateUsername
 );
 router.get("/search/:userName", userController.findUserBySearch);
+
+router.patch(
+  "/updateBio",
+  userMiddleware.authenticationMiddleware,
+  userController.updateBio
+);
 
 module.exports = { userRouter: router };

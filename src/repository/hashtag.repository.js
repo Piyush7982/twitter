@@ -1,8 +1,9 @@
 const crud = require("./crud.repository");
-const { Hashtag } = require("../model");
+const { Hashtag, User } = require("../model");
 const { customError } = require("../util/common");
 const { StatusCodes } = require("http-status-codes");
 const { pagination } = require("../util/Miscellaneous");
+const { populate } = require("../model/hashtag.schema");
 
 class hashtagRepository extends crud {
   constructor() {
@@ -36,29 +37,81 @@ class hashtagRepository extends crud {
       const result = await Hashtag.aggregate([
         {
           $match: {
-            content: content,
-            onModel: onModel,
+            content: "lion",
+            onModel: "Tweet",
           },
         },
-
         {
           $lookup: {
-            from: onModel === "Tweet" ? "tweets" : "retweets",
+            from: "tweets",
             localField: "Model",
             foreignField: "_id",
             as: "result",
           },
         },
         {
+          $unwind: "$result",
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "result.user",
+            foreignField: "_id",
+            as: "result.user",
+          },
+        },
+        {
+          $unwind: "$result.user",
+        },
+        {
           $project: {
-            Tweet: "$result",
-            count: {
-              $size: "$result",
+            "result.content": 1,
+            "result.hashtags": 1,
+            "result.likes": 1,
+            "result.retweets": 1,
+            "result.createdAt": 1,
+            "result.updatedAt": 1,
+            "result.__v": 1,
+            "result.user": {
+              userName: 1,
+              coverPhoto: 1,
             },
           },
         },
+        {
+          $group: {
+            _id: "$_id",
+            Tweet: { $push: "$result" },
+            count: { $sum: 1 },
+          },
+        },
       ]);
-      // const result = await Hashtag.find({
+      // const result = await Hashtag.aggregate([
+      //   {
+      //     $match: {
+      //       content: content,
+      //       onModel: onModel,
+      //     },
+      //   },
+
+      //   {
+      //     $lookup: {
+      //       from: onModel === "Tweet" ? "tweets" : "retweets",
+      //       localField: "Model",
+      //       foreignField: "_id",
+      //       as: "result",
+      //     },
+      //   },
+      //   {
+      //     $project: {
+      //       Tweet: "$result",
+      //       count: {
+      //         $size: "$result",
+      //       },
+      //     },
+      //   },
+      // ]);
+      // const result = awsait Hashtag.find({
       //   content: content,
       //   onModel: onModel,
       // }).populate("Model");
@@ -84,19 +137,40 @@ class hashtagRepository extends crud {
       );
     }
   }
-  async getTopHashtag(limit, page) {
+  async getTopHashtag(limit = 5, page = 1) {
     try {
       const result = await Hashtag.aggregate([
         {
-          $project: {
-            numOfUsers: {
-              $size: "$users",
-            },
+          $unwind: "$Model",
+        },
+        {
+          $lookup: {
+            from: "tweets",
+            localField: "Model",
+            foreignField: "_id",
+            as: "tweet",
+          },
+        },
+        {
+          $unwind: "$tweet",
+        },
+        {
+          $group: {
+            _id: "$_id",
+            content: { $first: "$content" },
+            count: { $sum: 1 },
+            latestTweetDate: { $max: "$tweet.createdAt" },
+          },
+        },
+        {
+          $match: {
+            count: { $gte: 1 },
           },
         },
         {
           $sort: {
-            numOfUsers: -1,
+            count: -1,
+            latestTweetDate: -1,
           },
         },
         {
@@ -106,6 +180,57 @@ class hashtagRepository extends crud {
           $limit: limit * 1,
         },
       ]);
+      // {
+      //   $unwind: "$Model",
+      // },
+      // {
+      //   $group: {
+      //     _id: "$_id",
+      //     content: { $first: "$content" },
+      //     count: { $sum: 1 },
+      //   },
+      // },
+      // {
+      //   $match: {
+      //     count: { $gt: 1 },
+      //   },
+      // },
+      // {
+      //   $sort: {
+      //     count: -1,
+      //   },
+      // },
+      // {
+      //   $skip: (page * 1 - 1) * (limit * 1),
+      // },
+      // {
+      //   $limit: limit * 1,
+      // },
+      //   {
+      //     $match: {
+      //       onModel: "Tweet",
+      //     },
+      //   },
+      //   {
+      //     $unwind: "$Model",
+      //   },
+      //   {
+      //     $group: {
+      //       _id: "$content",
+      //       count: { $sum: 1 },
+      //     },
+      //   },
+      //   {
+      //     $match: {
+      //       count: { $gte: 1 },
+      //     },
+      //   },
+      //   {
+      //     $sort: {
+      //       count: -1,
+      //     },
+      //   },
+      // ]);
       return result;
     } catch (error) {
       throw new customError(

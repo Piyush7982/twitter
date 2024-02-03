@@ -93,7 +93,7 @@ class userRepository extends crud {
       const user = await User.find({
         userName: { $regex: userName, $options: "i" },
       })
-        .select("userName")
+        .select("userName coverPhoto")
         .limit(limit * 1)
         .skip((page - 1) * limit * 1);
       return user;

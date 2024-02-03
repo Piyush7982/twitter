@@ -2,6 +2,7 @@ const crud = require("./crud.repository");
 const { Tweet } = require("../model");
 const { pagination } = require("../util/Miscellaneous");
 const { customError } = require("../util/common");
+const { StatusCode } = require("../util/common/error.response");
 
 class tweetRepository extends crud {
   constructor() {
@@ -62,11 +63,24 @@ class tweetRepository extends crud {
       );
     }
   }
-  async findOne(_id) {
+  async findOne(_id, limit = 1, page = 1) {
     try {
+      limit = limit * 1;
+      page = page * 1;
       const tweet = await this.model
         .findById(_id)
-        .populate(["likes", "retweets"]);
+        .populate("likes", ["count", "users"])
+        .populate("user", ["userName", "coverPhoto"])
+        .populate({
+          path: "retweets",
+          options: {
+            limit: limit * 1,
+            skip: (page - 1) * limit * 1,
+            sort: { createdAt: -1 },
+          },
+          populate: { path: "user", select: ["userName", "coverPhoto"] },
+        });
+
       return tweet;
     } catch (error) {
       throw new customError(error.message, StatusCodes.BAD_REQUEST, error.name);

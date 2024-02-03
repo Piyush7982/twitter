@@ -12,13 +12,14 @@ async function createTweet(tweet) {
 
   session.startTransaction();
   try {
-    const { content, users } = tweet;
+    const { content, users, image } = tweet;
 
     const hashtag = await generateHashtag(content);
 
     const result = await tweetRepo.create({
       content: content,
       user: users,
+      image: image,
     });
     const tweetId = result._id;
     const hash = await Promise.all(
@@ -80,9 +81,9 @@ async function globalTweet(data) {
     throw error;
   }
 }
-async function findTweetByTweetId(id) {
+async function findTweetByTweetId(id, limit, page) {
   try {
-    const tweet = await tweetRepo.findOne(id);
+    const tweet = await tweetRepo.findOne(id, limit, page);
     return tweet;
   } catch (error) {
     throw error;

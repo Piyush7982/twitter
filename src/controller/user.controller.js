@@ -11,6 +11,7 @@ async function signUp(req, res) {
       userName: req.body.userName,
       email: req.body.email,
       password: req.body.password,
+      coverPhoto: req?.file?.url,
     });
     successResponse.Data = user.userName;
     successResponse.Message = `User created successfully with email ${user.email}`;
@@ -27,7 +28,8 @@ async function login(req, res) {
       userName: req.body.userName,
       password: req.body.password,
     });
-    successResponse.Data = user;
+    const { username, id } = user;
+    successResponse.Data = { username, id };
     successResponse.Message = "User logged in successfully";
     res.cookie("access_token", user.token, {
       // httpOnly: true,
@@ -191,6 +193,21 @@ async function findUserBySearch(req, res) {
     res.json(errorResponse).status(errorResponse.StatusCode);
   }
 }
+async function updateBio(req, res) {
+  try {
+    const result = await userService.updateBio({
+      id: req.user.id,
+      bio: req.body.bio,
+    });
+    successResponse.Data = result;
+    successResponse.Message = "succesfully updated";
+    return res.status(successResponse.StatusCode).json(successResponse);
+  } catch (error) {
+    errorResponse.Message = "failed to update bio";
+    errorResponse.Error = { error: error.message, name: error.name };
+    res.json(errorResponse).status(errorResponse.StatusCode);
+  }
+}
 module.exports = {
   signUp,
   login,
@@ -202,4 +219,5 @@ module.exports = {
   updateUsername,
   updatePassword,
   findUserBySearch,
+  updateBio,
 };

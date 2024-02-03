@@ -5,7 +5,7 @@ const { bcrypt, jwt } = require("../util/authorisation");
 const userRepo = new userRepository();
 async function createUser(User) {
   try {
-    const { userName, email, password } = User;
+    const { userName, email, password, coverPhoto } = User;
     if (await userRepo.exists({ userName })) {
       throw new customError(
         "User with this username already exists",
@@ -20,10 +20,14 @@ async function createUser(User) {
       );
     }
     const hashedPassword = await bcrypt.hashPassword(password);
+    coverPhoto
+      ? coverPhoto
+      : "https://imgs.search.brave.com/FwFW8TQHcmshRLqp1U8AnFAKgtnBRwP0LkoplStAus0/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudW5zcGxhc2gu/Y29tL3Bob3RvLTE2/MDgwMzIzNjQ4OTUt/MGRhNjdhZjM2Y2Qy/P3E9ODAmdz0xMDAw/JmF1dG89Zm9ybWF0/JmZpdD1jcm9wJml4/bGliPXJiLTQuMC4z/Jml4aWQ9TTN3eE1q/QTNmREI4TUh4bGVI/QnNiM0psTFdabFpX/UjhNVEY4Zkh4bGJu/d3dmSHg4Zkh3PQ";
     const user = await userRepo.create({
       userName,
       email,
       password: hashedPassword,
+      coverPhoto,
     });
     return user;
   } catch (error) {
@@ -101,7 +105,7 @@ async function login(userData) {
     const token = await jwt.tokenGenerate({
       id: user._id,
       userName: userName,
-      expiryInSec: 60 * 60,
+      // expiryInSec: 60 * 60,
     });
     return { token, username, id };
   } catch (error) {
@@ -207,6 +211,15 @@ async function searchUser(data) {
     throw error;
   }
 }
+async function updateBio(data) {
+  try {
+    const { id, bio } = data;
+    const result = await userRepo.update(id, { bio });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = {
   createUser,
@@ -219,4 +232,5 @@ module.exports = {
   followUser,
   updateUsername,
   searchUser,
+  updateBio,
 };

@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const { tweetController } = require("../../controller");
-const { userMiddleware } = require("../../middleware");
+const { userMiddleware, multerMiddlware } = require("../../middleware");
 
 router.post(
   "/",
   userMiddleware.authenticationMiddleware,
+  multerMiddlware.imageUploadMiddleware,
   tweetController.createTweet
 );
 router.delete(

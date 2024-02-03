@@ -9,8 +9,8 @@ async function tokenGenerate(data) {
     const { id, userName, expiryInSec } = data; //add suitable
     const token = await jwt.sign(
       { id: id, userName: userName },
-      `${process.env.TOKEN_GENERATE_KEY}`,
-      { expiresIn: `${expiryInSec}s` }
+      `${process.env.TOKEN_GENERATE_KEY}`
+      // { expiresIn: `${expiryInSec}s` }
     );
     return token;
   } catch (error) {
