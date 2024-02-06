@@ -2,15 +2,7 @@ const cookieParser = require("cookie-parser");
 const express = require("express");
 const cors = require("cors");
 const router = require("./routes");
-// const { Tweet, Retweet, Hashtag, Like, User } = require("./model");
-// const { userRepository, tweetRepository } = require("./repository");
-// const {
-//   tweetService,
-//   hashtagService,
-//   retweetService,
-//   likeService,
-//   userService,
-// } = require("./service");
+
 const { DATABASE_CONFIG, SERVER_CONFIG } = require("./config");
 
 DATABASE_CONFIG.connect();
@@ -22,14 +14,9 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin: true,
+    origin: SERVER_CONFIG.FRONTEND_URL ? FRONTEND_URL : true,
   })
 );
-
-// const mongoose = require("mongoose");
-
-// create();
-//pagination implement
 
 app.use("/api", router);
 app.listen(SERVER_CONFIG.PORT, () => {

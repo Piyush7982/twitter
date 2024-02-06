@@ -12,11 +12,6 @@ async function authenticationMiddleware(req, res, next) {
       errorResponse.StatusCode = StatusCodes.UNAUTHORIZED;
       res.status(errorResponse.StatusCode).json(errorResponse);
       return;
-      // throw new customError(
-      //   "Token not found",
-      //   StatusCodes.BAD_REQUEST,
-      //   "Authentication Error"
-      // );
     }
     const response = await jwt.tokenVerify(token);
 

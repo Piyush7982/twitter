@@ -10,6 +10,7 @@ router.post(
 );
 router.post("/login", userController.login);
 router.post("/logout", userController.logout);
+router.get("/checkAuth", userController.checkIsAuthenticated);
 router.get("/:userName", userController.getUser);
 router.delete(
   "/",
