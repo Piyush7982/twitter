@@ -61,12 +61,5 @@ tweetSchema.post("findOneAndDelete", async (doc, next) => {
   next();
 });
 
-// tweetSchema.post("save", async function (doc, next) {
-//   const a = await User.findByIdAndUpdate(doc.user, {
-//     $push: { tweets: doc._id },
-//   });
-//   next();
-// });
-//to be done
 const Tweet = mongoose.model("Tweet", tweetSchema);
 module.exports = Tweet;

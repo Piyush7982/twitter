@@ -11,11 +11,6 @@ async function createLike(like) {
     if (Boolean(exist)) {
       await toggleLike(exist, users);
 
-      //   await likeRepo.update(exist._id, {
-      //     users: [...exist.users, ...users],
-      //     count: exist.count + 1,
-      //   });
-
       return exist;
     } else {
       const newLike = await likeRepo.create({
@@ -64,11 +59,7 @@ async function updateLike(like) {
       );
     } else {
       await toggleLike(exist, users);
-      //   await likeRepo.update(exist._id, {
-      //     count: inc ? exist.count + 1 : exist.count - 1,
-
-      //     users: [...exist.users, ...users],
-      //   });
+      //
     }
   } catch (error) {
     throw error;
@@ -76,15 +67,6 @@ async function updateLike(like) {
 }
 async function toggleLike(like, users) {
   try {
-    // const { onModel, model, users } = like;
-    // const like = await likeRepo.findByModel({
-    //   model: model,
-    //   onModel: onModel,
-    // });
-    // console.log(like.users);
-    // console.log(users);
-    // console.log(like.users.includes(users.toString()));
-
     if (like.users.includes(users.toString())) {
       await likeRepo.update(like._id, {
         $pull: { users: users.toString() },

@@ -21,11 +21,6 @@ async function authenticationMiddleware(req, res, next) {
       errorResponse.StatusCode = StatusCodes.UNAUTHORIZED;
       res.status(errorResponse.StatusCode).json(errorResponse);
       return;
-      // throw new customError(
-      //   "User Not found",
-      //   StatusCodes.INTERNAL_SERVER_ERROR,
-      //   "Authentication Error"
-      // );
     }
     req.user = response;
 

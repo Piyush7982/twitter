@@ -86,35 +86,6 @@ class hashtagRepository extends crud {
           },
         },
       ]);
-      // const result = await Hashtag.aggregate([
-      //   {
-      //     $match: {
-      //       content: content,
-      //       onModel: onModel,
-      //     },
-      //   },
-
-      //   {
-      //     $lookup: {
-      //       from: onModel === "Tweet" ? "tweets" : "retweets",
-      //       localField: "Model",
-      //       foreignField: "_id",
-      //       as: "result",
-      //     },
-      //   },
-      //   {
-      //     $project: {
-      //       Tweet: "$result",
-      //       count: {
-      //         $size: "$result",
-      //       },
-      //     },
-      //   },
-      // ]);
-      // const result = awsait Hashtag.find({
-      //   content: content,
-      //   onModel: onModel,
-      // }).populate("Model");
 
       return result;
     } catch (error) {
@@ -180,57 +151,7 @@ class hashtagRepository extends crud {
           $limit: limit * 1,
         },
       ]);
-      // {
-      //   $unwind: "$Model",
-      // },
-      // {
-      //   $group: {
-      //     _id: "$_id",
-      //     content: { $first: "$content" },
-      //     count: { $sum: 1 },
-      //   },
-      // },
-      // {
-      //   $match: {
-      //     count: { $gt: 1 },
-      //   },
-      // },
-      // {
-      //   $sort: {
-      //     count: -1,
-      //   },
-      // },
-      // {
-      //   $skip: (page * 1 - 1) * (limit * 1),
-      // },
-      // {
-      //   $limit: limit * 1,
-      // },
-      //   {
-      //     $match: {
-      //       onModel: "Tweet",
-      //     },
-      //   },
-      //   {
-      //     $unwind: "$Model",
-      //   },
-      //   {
-      //     $group: {
-      //       _id: "$content",
-      //       count: { $sum: 1 },
-      //     },
-      //   },
-      //   {
-      //     $match: {
-      //       count: { $gte: 1 },
-      //     },
-      //   },
-      //   {
-      //     $sort: {
-      //       count: -1,
-      //     },
-      //   },
-      // ]);
+
       return result;
     } catch (error) {
       throw new customError(
