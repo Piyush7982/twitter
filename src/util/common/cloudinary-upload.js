@@ -7,7 +7,7 @@ async function uploadImage(filename) {
       throw new Error("filename is required");
     }
     const result = await CLOUDINARY_CONFIG.uploader.upload(
-      path.resolve(__dirname, `../../../public/temp/${filename}`),
+      path.resolve(__basedir, `../public/temp/${filename}`),
       {
         use_filename: true,
         unique_filename: false,

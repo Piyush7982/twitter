@@ -1,3 +1,4 @@
+global.__basedir = __dirname;
 const cookieParser = require("cookie-parser");
 const express = require("express");
 const cors = require("cors");
